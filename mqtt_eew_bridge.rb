@@ -66,6 +66,8 @@ def mqtt_publish(message)
           :password    => $config['mqtt_pass']
         )
         mqtt.publish(topic, message , retain=false)
+        sleep(1)
+        mqtt.disconnect()
         throw :try_loop
       rescue Exception => e
         $log.error(e)
