@@ -56,26 +56,13 @@ def mqtt_publish(message)
   topic = $config['mqtt_topic']
   $log.debug "topic=#{topic}, message=#{message}"
 
-  catch :try_loop do
-    10.times do
-      begin
-        mqtt = MQTT::Client.connect(
-          :remote_host => $config['mqtt_host'],
-          :remote_port => $config['mqtt_port'].to_i,
-          :username    => $config['mqtt_user'],
-          :password    => $config['mqtt_pass']
-        )
-        mqtt.publish(topic, message , retain=false)
-        sleep(1)
-        mqtt.disconnect()
-        throw :try_loop
-      rescue Exception => e
-        $log.error(e)
-      end
-      sleep 0.5
-    end
-    $log.error "Failed to publish mqtt message...topic=#{topic}, message=#{message}"
-  end
+  mqtt = MQTT::Client.connect(
+    :remote_host => $config['mqtt_host'],
+    :remote_port => $config['mqtt_port'].to_i,
+    :username    => $config['mqtt_user'],
+    :password    => $config['mqtt_pass']
+  )
+  mqtt.publish(topic, message , retain=false)
 end
 
 def send_keepalive()
@@ -98,17 +85,7 @@ class WNI_EEW
   end
 
   def initialize(user_id, pass)
-    loop do
-      begin
-        initialize_inner(user_id, pass)
-      rescue Exception => e
-        $log.error e.to_s
-        $log.error e.backtrace
-      end
-      $log.info "waiting... (10sec)"
-      sleep 10
-      $log.info "reconnectiong..."
-    end
+    initialize_inner(user_id, pass)
   end
 
   def initialize_inner(user_id, pass)

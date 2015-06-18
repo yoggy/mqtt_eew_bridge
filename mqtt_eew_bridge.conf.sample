@@ -1,0 +1,26 @@
+;
+; mqtt_eew_bridge.conf - for supervisord configuration file
+;
+; install
+;     $ pwd
+;     $ sudo cp mqtt_eew_bridge.conf.sample /etc/supervisor/conf.d/mqtt_eew_bridge.conf
+;     $ sudo vi /etc/supervisor/conf.d/mqtt_eew_bridge.conf
+;       (fix path, etc...)
+;     $ sudo supervisorctl reread
+;     $ sudo supervisorctl add mqtt_eew_bridge
+;     $ sudo supervisorctl status
+;     mqtt_eew_bridge                  RUNNING    pid 8192, uptime 0:00:30
+;
+; see also
+;     Supervisor: A Process Control System
+;     http://supervisord.org/
+;
+[program:mqtt_eew_bridge]
+command         = /usr/bin/ruby /path/to/mqtt_eew_bridge/mqtt_eew_bridge.rb
+numprocs        = 1
+autostart       = true
+autorestart     = true
+user            = username
+environment     = HOME=/home/username/
+redirect_stderr = true
+stdout_logfile  = /path/to/mqtt_eew_bridge/log.txt
